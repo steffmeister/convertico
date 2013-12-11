@@ -50,7 +50,8 @@ function plugin_do_work($title, $input_path, $output_path) {
 	system('echo package '.$package_name.'\; > '.$source_file);
 	system('cat '.PLUGIN_DIR.'android/MainActivity.java >> '.$source_file);
 	
-	echo "Generating strings.xml...\n";
+	echo "Converting strings.xml...\n";
+	system('cd '.$output_path.'/res/values/; cat strings.xml | sed -r \'s/MainActivity/'.$title.'/g\' > strings-new.xml; rm strings.xml; mv strings-new.xml strings.xml');
 	
 	echo "Copying assets...\n";
 	system('mkdir '.$output_path.'/assets');

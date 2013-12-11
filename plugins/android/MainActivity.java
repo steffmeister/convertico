@@ -16,6 +16,7 @@ public class MainActivity extends Activity
         WebView myWebView = (WebView) findViewById(R.id.webView1);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setAllowFileAccessFromFileURLs(true);
         myWebView.loadUrl("file:///android_asset/index.html");

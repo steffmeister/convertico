@@ -29,7 +29,28 @@ So for example you could use this to convert your app to an apk:
 Targets
 -------
 Available output targets (for now, this list will be longer hopefully):
-* android, convert html5 app to apk (plugin.android.php)
+
+### android
+convert html5 app to apk (plugin.android.php)
+
+#### Requirements
+* Android SDK (adjust convertico.config.php accordingly)
+
+### firefoxos
+package app for Firefox OS (plugin.firefoxos.php)
+
+### Your own target
+You can easily write your own target plugin. Following functions must be
+implemented:
+ * plugin_about()
+   Return some description of the plugin (String).
+ * plugin_get_version()
+   Return version number of the plugin (String).
+ * plugin_check_config()
+   Return true/false wheter all requirements are accomplished (eg check for
+   external programs or config constants, ... )
+ * plugin_do_work($title, $input_path, $output_path)
+   Do the conversion. Return true/false.
 
 Future plans
 ------------

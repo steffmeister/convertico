@@ -2,10 +2,14 @@
 <?php
 
 define('CONVERTICO_VERSION', '0.1');
-define('OUTPUT_DIR', 'output/');
-define('PLUGIN_DIR', 'plugins/');
 
-define('PLUGIN_ANDROID_SDK_PATH', '/home/steff/Entwicklung/android-sdk-linux_86/');
+if (file_exists('convertico.config.php')) require('convertico.config.php');
+
+if (!defined('OUTPUT_DIR')) define('OUTPUT_DIR', 'output/');
+if (!defined('PLUGIN_DIR')) define('PLUGIN_DIR', 'plugins/');
+if (!defined('AUTHOR_NAME')) define('AUTHOR_NAME', 'unknown');
+if (!defined('AUTHOR_EMAIL')) define('AUTHOR_EMAIL', 'unknown@unknown');
+if (!defined('AUTHOR_WEB')) define('AUTHOR_WEB', '');
 
 echo 'convertico '.CONVERTICO_VERSION."\n*******************\n";
 
@@ -15,6 +19,7 @@ $longopts = array(
 	"help",
 	"input:",
 	"title:",
+	"description:",
 	"plugin:",
 	"list-plugins"
 );
@@ -79,6 +84,7 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		if (isset($options['title'])) {
 			$title = $options['title'];
 		}
+		
 		
 		if (!plugin_do_work($title, $options['input'], OUTPUT_DIR.$title.'-'.$plugin)) {
 			echo "Error occurred...\n";

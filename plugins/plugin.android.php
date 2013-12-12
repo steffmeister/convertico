@@ -1,7 +1,7 @@
 <?php
 
 /* prevent direct access */
-//if (!defined(CONVERTICO_VERSION)) exit(1);
+if (!defined('CONVERTICO_VERSION')) exit(1);
 
 function plugin_about() {
 	$ret = "Android Plugin v".plugin_get_version();

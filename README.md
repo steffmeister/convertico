@@ -13,7 +13,7 @@ Requirements
 ------------
 It is a PHP script so you need the PHP5 CLI on your system. Under Ubuntu this
 is in the "php5-cli" package.
-Yout HTML5 app needs to be inside of a folder and there needs to be an
+Your HTML5 app needs to be inside of a folder and there needs to be an
 index.html file.
 
 Usage
@@ -28,12 +28,16 @@ Available parameters:
 So for example you could use this to convert your app to an apk:
 > ./convertico.php --input=/home/user/mysuperhtmlapp --plugin=android
 
+The result is generated in the ouput subfolder and in this example it would be
+named "mysuperhtmlapp-android".
+
 Targets
 -------
 Available output targets (for now, this list will be longer hopefully):
 
 ### android
-convert html5 app to apk (plugin.android.php)
+convert html5 app to apk (plugin.android.php). After building the apk can be
+found in the bin directory of the output folder.
 
 #### Requirements
 * Android SDK (adjust convertico.config.php accordingly)
@@ -85,3 +89,16 @@ Sailfish, and I am sure there is a number of mobile OS' which I have forgot.
 License
 -------
 convertico is licensed under the terms of the GPLv2.
+
+Contact
+-------
+You can contact me via software(at)steffmeister(dot)at.
+
+Donations
+---------
+If you want to support the development or just want to say thanks, you can
+donate to me via the following ways:
+ * PayPal, please contact me (see above).
+ * Bitcoin Wallet, 19oU8ZCEz444mrSexgxtpPKrhfxLW2bEAh
+ * Litecoin Wallet, LbYw2BfUdRb5xvKDEf1axb4WFuzP3GfWV5
+

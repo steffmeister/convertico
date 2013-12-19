@@ -49,7 +49,6 @@ Those are optional.
  * --android-min-sdk, defaults to target-sdk
  * --android-version-code, defaults to 1
  * --android-version-name, defaults to "1.0"
- * --android-app-name
  * --android-manifest, if you want to override the manifest template
 
 ### firefoxos

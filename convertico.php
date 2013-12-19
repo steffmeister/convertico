@@ -46,9 +46,11 @@ if (isset($options['list-plugins'])) {
 			}
 		} else {
 			echo "No plugins found, sorry!\n";
+			exit(1);
 		}
 	} else {
 		echo "Please check plugin directory! (Existence, Permissions, ...)\n";
+		exit(2);
 	}
 	exit(0);
 }
@@ -65,7 +67,7 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		/* specified plugin not in list */
 		if ($target_plugin == '') {
 			echo "Specified plugin not found!\n";
-			exit(0);
+			exit(3);
 		}
 		/* check if input is a valid directory */
 		if (!is_dir($options['input'])) {
@@ -77,25 +79,36 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		echo "Plugin version is... ".plugin_get_version()."\n";
 		if (plugin_check_config() == false) {
 			echo "Misconfiguration. Please check.\n";
-			exit(1);
+			exit(4);
 		}
 		
 		$title = basename($options['input']);
 		if (isset($options['title'])) {
 			$title = $options['title'];
 		}
+
+		$input_path = $options['input'];
+		$output_path = OUTPUT_DIR.$title.'-'.$target_plugin;
 		
+		if (!is_dir($input_path)) {
+			echo "Invalid input path :(\n";
+			exit(5);
+		}
+		if (is_dir($output_path)) {
+			echo "Output directory already exists!\n";
+			exit(6);
+		}
 		
-		if (!plugin_do_work($title, $options['input'], OUTPUT_DIR.$title.'-'.$plugin)) {
+		if (!plugin_do_work($title, $input_path, $output_path)) {
 			echo "Error occurred...\n";
-			exit (1);
+			exit (7);
 		}
 		
 		echo "I think we're done here.\n";
-		
+		exit(0);
 	} else {
 		echo "No plugins found, sorry!\n";
-		exit(0);
+		exit(1);
 	}
 }
 

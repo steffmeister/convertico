@@ -13,15 +13,17 @@ Requirements
 ------------
 It is a PHP script so you need the PHP5 CLI on your system. Under Ubuntu this
 is in the "php5-cli" package.
+Yout HTML5 app needs to be inside of a folder and there needs to be an
+index.html file.
 
 Usage
 -----
 Available parameters:
-* help, show help
-* input=[directory], directory where your HTML5 app is located
-* title=[title], title of the app
-* plugin=[target name], which plugin to use as target
-* list-plugins, list available targets
+* --help, show help
+* --input=[directory], directory where your HTML5 app is located
+* --title=[title], title of the app
+* --plugin=[target name], which plugin to use as target
+* --list-plugins, list available targets
 
 So for example you could use this to convert your app to an apk:
 > ./convertico.php --input=/home/user/mysuperhtmlapp --plugin=android
@@ -36,8 +38,18 @@ convert html5 app to apk (plugin.android.php)
 #### Requirements
 * Android SDK (adjust convertico.config.php accordingly)
 
+#### Parameters
+Those are optional.
+ * --android-package-name
+ * --android-target-sdk, defaults to 19
+ * --android-min-sdk, defaults to target-sdk
+ * --android-version-code, defaults to 1
+ * --android-version-name, defaults to "1.0"
+ * --android-app-name
+ * --android-manifest, if you want to override the manifest template
+
 ### firefoxos
-package app for Firefox OS (plugin.firefoxos.php)
+Package app for Firefox OS (plugin.firefoxos.php)
 
 ### Your own target
 You can easily write your own target plugin. Following functions must be
@@ -51,6 +63,18 @@ implemented:
    external programs or config constants, ... )
  * plugin_do_work($title, $input_path, $output_path)
    Do the conversion. Return true/false.
+
+Return values
+-------------
+ * 0 = ok
+ * 1 = No plugins found
+ * 2 = Plugin directory not found
+ * 3 = Specified plugin not found
+ * 4 = Plugin misconfiguration, check config file
+ * 5 = Input path invalid
+ * 6 = Output path already exists
+ * 7 = Error occurred during conversion
+
 
 Future plans
 ------------

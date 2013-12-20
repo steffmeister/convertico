@@ -3,6 +3,11 @@
 /* prevent direct access */
 if (!defined('CONVERTICO_VERSION')) exit(1);
 
+define('RESOLUTION_LDPI', '36x36');
+define('RESOLUTION_MDPI', '48x48');
+define('RESOLUTION_HDPI', '72x72');
+define('RESOLUTION_XHDPI', '96x96');
+
 function plugin_about() {
 	$ret = "Android Plugin v".plugin_get_version();
 	$ret .= 'Create an Android app!';
@@ -19,6 +24,17 @@ function plugin_check_config() {
 		echo "ERROR: please check your PLUGIN_ANDROID_SDK_PATH. It has to point to a valid Android SDK!\n";
 		return false;
 	}
+	
+	/* check for mogrify */
+	$output = array();
+	$value = '';
+	exec('mogrify', $output, $value);
+	//passthru('msdsdogrify', $value);
+	if ($value == 127) {
+		echo ">mogrify< not found, resizing images will not be possible...\n";
+	}
+	//echo $value;
+	
 	/* everything is fine */
 	return true;
 }
@@ -33,7 +49,10 @@ function plugin_do_work($title, $input_path, $output_path) {
 		"android-min-sdk:",
 		"android-version-code:",
 		"android-version-name:",
-		"android-manifest"
+		"android-manifest:",
+		"android-launcher-image:",
+		"android-internet-permission",
+		"android-activity-name:"
 	);
 
 	$options = getopt($shortopts, $longopts);
@@ -54,7 +73,10 @@ function plugin_do_work($title, $input_path, $output_path) {
 	$activity_name = 'MainActivity';
 	if (isset($options['android-activity-name'])) $activity_name = $options['android-activity-name'];
 	$manifest_file = PLUGIN_DIR.'android/AndroidManifest.xml';
-	if (isset($options['android-manifest'])) $$manifest_file = $options['android-manifest'];
+	if (isset($options['android-manifest'])) $manifest_file = $options['android-manifest'];
+	$android_launcher_image = '';
+	if (isset($options['android-launcher-image'])) $android_launcher_image = $options['android-launcher-image'];
+	
 	
 	echo "Generating project...";
 	system(PLUGIN_ANDROID_SDK_PATH.'tools/android create project --target '.$target_sdk.' --name '.$title.' --path '.$output_path.' --activity '.$activity_name.' --package '.$package_name, $return_value);
@@ -97,6 +119,18 @@ function plugin_do_work($title, $input_path, $output_path) {
 	echo "Copying assets...\n";
 	system('mkdir '.$output_path.'/assets');
 	system('cp -r '.$input_path.'/* '.$output_path.'/assets');
+	
+	// user defined image
+	if ($android_launcher_image != '') {
+		if (file_exists($android_launcher_image)) {
+			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_LDPI.' '.$output_path.'/res/drawable-ldpi/ic_launcher.png');
+			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_MDPI.' '.$output_path.'/res/drawable-mdpi/ic_launcher.png');
+			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_HDPI.' '.$output_path.'/res/drawable-hdpi/ic_launcher.png');
+			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_XHDPI.' '.$output_path.'/res/drawable-xhdpi/ic_launcher.png');
+		} else {
+			echo "Specified image does not exist.\n";
+		}
+	}
 	
 	echo "Building project...\n";
 	system('cd '.$output_path.'; ant debug;');

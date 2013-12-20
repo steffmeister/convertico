@@ -21,7 +21,8 @@ $longopts = array(
 	"title:",
 	"description:",
 	"plugin:",
-	"list-plugins"
+	"list-plugins",
+	"check"
 );
 
 $options = getopt($shortopts, $longopts);
@@ -113,7 +114,32 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 }
 
 
-
+if ((isset($options['plugin'])) && (isset($options['check']))) {
+	$target_plugin = '';
+	$plugins = get_available_plugins();
+	if (count($plugins) > 0) {
+		/* check for plugins */
+		foreach($plugins as $plugin) {
+			if ($options['plugin'] == $plugin) $target_plugin = $plugin;
+		}
+		/* specified plugin not in list */
+		if ($target_plugin == '') {
+			echo "Specified plugin not found!\n";
+			exit(3);
+		}
+		echo "Loading plugin ".PLUGIN_DIR.'plugin.'.$target_plugin.'.php...';
+		require PLUGIN_DIR.'plugin.'.$target_plugin.'.php';
+		echo "done\n";
+		echo "Plugin version is... ".plugin_get_version()."\n";
+		if (plugin_check_config() == false) {
+			echo "Misconfiguration. Please check.\n";
+			exit(4);
+		} else {
+			echo "Configuration is valid.\n";
+		}
+		exit(0);
+	}
+}
 
 function get_available_plugins() {
 	$plugins = array();

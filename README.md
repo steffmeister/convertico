@@ -53,6 +53,7 @@ Those are optional.
  * --android-version-code, defaults to 1
  * --android-version-name, defaults to "1.0"
  * --android-manifest, if you want to override the manifest template
+ * --android-launcher-image, to set an launcher icon
 
 ### firefoxos
 Package app for Firefox OS (plugin.firefoxos.php)

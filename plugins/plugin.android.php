@@ -31,9 +31,9 @@ function plugin_check_config() {
         return false;
     }
 	
-	/* check for mogrify */
-    if (!check_exists_command('mogrify')) {
-        echo ">mogrify< not found, resizing images will not be possible...\n";
+	/* check for "convert" of imagemagick */
+    if (!check_exists_command('convert')) {
+        echo ">convert< not found, resizing images will not be possible...\n";
         return false;
     }
 	
@@ -55,7 +55,8 @@ function plugin_do_work($title, $input_path, $output_path) {
 		"android-manifest:",
 		"android-launcher-image:",
 		"android-internet-permission",
-		"android-activity-name:"
+		"android-activity-name:",
+		"android-ant-release"
 	);
 
 	$options = getopt($shortopts, $longopts);
@@ -79,6 +80,8 @@ function plugin_do_work($title, $input_path, $output_path) {
 	if (isset($options['android-manifest'])) $manifest_file = $options['android-manifest'];
 	$android_launcher_image = '';
 	if (isset($options['android-launcher-image'])) $android_launcher_image = $options['android-launcher-image'];
+	$ant_mode = "debug";
+	if (isset($options['android-ant-release'])) $ant_mode = "release";
 	
 	
 	echo "Generating project...";
@@ -127,16 +130,26 @@ function plugin_do_work($title, $input_path, $output_path) {
 	// user defined image
 	if ($android_launcher_image != '') {
 		if (file_exists($android_launcher_image)) {
-			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_LDPI.' '.$output_path.'/res/drawable-ldpi/ic_launcher.png');
-			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_MDPI.' '.$output_path.'/res/drawable-mdpi/ic_launcher.png');
-			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_HDPI.' '.$output_path.'/res/drawable-hdpi/ic_launcher.png');
-			system('mogrify '.$android_launcher_image.' resize '.RESOLUTION_XHDPI.' '.$output_path.'/res/drawable-xhdpi/ic_launcher.png');
+            if (check_exists_command('convert')) {
+                echo "Converting images...ldpi...";
+                system('convert '.$android_launcher_image.' -resize '.RESOLUTION_LDPI.' '.$output_path.'/res/drawable-ldpi/ic_launcher.png');
+                echo "...mdpi...";
+                system('convert '.$android_launcher_image.' -resize '.RESOLUTION_MDPI.' '.$output_path.'/res/drawable-mdpi/ic_launcher.png');
+                echo "...hdpi...";
+                system('convert '.$android_launcher_image.' -resize '.RESOLUTION_HDPI.' '.$output_path.'/res/drawable-hdpi/ic_launcher.png');
+                echo "...xhdpi...";
+                system('convert '.$android_launcher_image.' -resize '.RESOLUTION_XHDPI.' '.$output_path.'/res/drawable-xhdpi/ic_launcher.png');
+                echo "ok\n";
+			} else {
+                echo ">convert< not found! Skipping launcher images.\n";
+			}
 		} else {
 			echo "Specified image does not exist.\n";
 		}
 	}
 	
 	echo "Building project...\n";
+	
 	system('cd '.$output_path.'; ant debug;');
 	
 	return true;

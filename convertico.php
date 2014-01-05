@@ -19,7 +19,6 @@ $longopts = array(
 	"help",
 	"input:",
 	"title:",
-	"description:",
 	"plugin:",
 	"list-plugins",
 	"check"
@@ -32,8 +31,9 @@ $options = getopt($shortopts, $longopts);
 if (isset($options['help'])) {
 	echo "Available parameters:\n";
 	foreach($longopts as $opt) {
-		echo $opt."\n";
+		echo " --".str_replace(':', '=<value>', $opt)."\n";
 	}
+	echo "Please check the README file for more informations.\n";
 	exit(0);
 }
 
@@ -72,7 +72,13 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		}
 		/* check if input is a valid directory */
 		if (!is_dir($options['input'])) {
-			echo ">input< is not a valid directory.\n!";
+			echo ">".$options['input']."< is not a valid directory.\n!";
+			exit(5);
+		}
+		/* check if index.html exists */
+		if (!file_exists($options['input'].'/index.html')) {
+            echo "index.html does not exist in specified directory!\n";
+            exit(8);
 		}
 		echo "Loading plugin ".PLUGIN_DIR.'plugin.'.$target_plugin.'.php...';
 		require PLUGIN_DIR.'plugin.'.$target_plugin.'.php';
@@ -91,10 +97,6 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		$input_path = $options['input'];
 		$output_path = OUTPUT_DIR.$title.'-'.$target_plugin;
 		
-		if (!is_dir($input_path)) {
-			echo "Invalid input path :(\n";
-			exit(5);
-		}
 		if (is_dir($output_path)) {
 			echo "Output directory already exists!\n";
 			exit(6);
@@ -141,6 +143,8 @@ if ((isset($options['plugin'])) && (isset($options['check']))) {
 	}
 }
 
+echo "Use --help parameter to show some possible arguments.\n";
+
 function get_available_plugins() {
 	$plugins = array();
 	if (is_dir(PLUGIN_DIR)) {
@@ -159,6 +163,58 @@ function get_available_plugins() {
 	} else {
 		return false;
 	}
+}
+
+/* check if a specified command exists */
+function check_exists_command($command) {
+    /* check for mogrify */
+    $output = array();
+    $value = '';
+    exec('which '.$command.' 2>&1 /dev/null', $output, $value);
+    //echo $value;
+    // not found?
+    if ($value == 2) return false;
+    // found!
+    return true;
+}
+
+/* make json more readable, function from php.net, user bohwaz */
+function json_readable_encode($in, $indent = 0, $from_array = false) {
+    $_myself = __FUNCTION__;
+    $_escape = function ($str) {
+        return preg_replace("!([\b\t\n\r\f\"\\'])!", "\\\\\\1", $str);
+    };
+
+    $out = '';
+
+    foreach ($in as $key=>$value) {
+        $out .= str_repeat("\t", $indent + 1);
+        $out .= "\"".$_escape((string)$key)."\": ";
+
+        if (is_object($value) || is_array($value)) {
+            $out .= "\n";
+            $out .= $_myself($value, $indent + 1);
+        } elseif (is_bool($value)) {
+            $out .= $value ? 'true' : 'false';
+        } elseif (is_null($value)) {
+            $out .= 'null';
+        } elseif (is_string($value)) {
+            $out .= "\"" . $_escape($value) ."\"";
+        } else {
+            $out .= $value;
+        }
+
+        $out .= ",\n";
+    }
+
+    if (!empty($out)) {
+        $out = substr($out, 0, -2);
+    }
+
+    $out = str_repeat("\t", $indent) . "{\n" . $out;
+    $out .= "\n" . str_repeat("\t", $indent) . "}";
+
+    return $out;
 }
 
 ?>

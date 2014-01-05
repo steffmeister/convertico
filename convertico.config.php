@@ -11,7 +11,7 @@ define('AUTHOR_WEB', 'http://www.steffmeister.at/');
 
 
 /* ANDROID TARGET */
-define('PLUGIN_ANDROID_SDK_PATH', '/home/steff/Entwicklung/android-sdk-linux_86/');
+define('PLUGIN_ANDROID_SDK_PATH', '/home/steff/Entwicklung/android-sdk-linux/');
 
 
 ?>

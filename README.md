@@ -12,7 +12,7 @@ with your app and it spits out your finished eg apk.
 Requirements
 ------------
 It is a PHP script so you need the PHP5 CLI on your system. Under Ubuntu this
-is in the "php5-cli" package.
+is in the "php5-cli" package. I think it has to be at least v5.3.
 Your HTML5 app needs to be inside of a folder and there needs to be an
 index.html file.
 
@@ -24,6 +24,7 @@ Available parameters:
 * --title=[title], title of the app
 * --plugin=[target name], which plugin to use as target
 * --list-plugins, list available targets
+* --check, use with plugin to check the configuration of a plugin
 
 So for example you could use this to convert your app to an apk:
 > ./convertico.php --input=/home/user/mysuperhtmlapp --plugin=android
@@ -40,12 +41,14 @@ convert html5 app to apk (plugin.android.php). After building the apk can be
 found in the bin directory of the output folder.
 
 #### Requirements
-* Android SDK (adjust convertico.config.php accordingly)
+ * Android SDK (adjust convertico.config.php accordingly)
+ * Some settings in the Android SDK manager
+ * ANT Compiler (in Ubuntu this is in package "ant")
 
 #### Parameters
 Those are optional.
  * --android-package-name
- * --android-target-sdk, defaults to 19
+ * --android-target-sdk, defaults to "android-19"
  * --android-min-sdk, defaults to target-sdk
  * --android-version-code, defaults to 1
  * --android-version-name, defaults to "1.0"
@@ -53,6 +56,14 @@ Those are optional.
 
 ### firefoxos
 Package app for Firefox OS (plugin.firefoxos.php)
+
+#### Requirements
+ * zip
+
+#### Parameters
+Those are optional
+ * --description
+ * --firefoxos-version-name, defaults to "1.0"
 
 ### Your own target
 You can easily write your own target plugin. Following functions must be
@@ -77,6 +88,7 @@ Return values
  * 5 = Input path invalid
  * 6 = Output path already exists
  * 7 = Error occurred during conversion
+ * 8 = index.html not found
 
 
 Future plans

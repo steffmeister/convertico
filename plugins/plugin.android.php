@@ -24,16 +24,19 @@ function plugin_check_config() {
 		echo "ERROR: please check your PLUGIN_ANDROID_SDK_PATH. It has to point to a valid Android SDK!\n";
 		return false;
 	}
+		
+	/* check for ant compiler */
+    if (!check_exists_command('ant')) {
+        echo ">ant< not found, please install!\n";
+        return false;
+    }
 	
 	/* check for mogrify */
-	$output = array();
-	$value = '';
-	exec('mogrify', $output, $value);
-	//passthru('msdsdogrify', $value);
-	if ($value == 127) {
-		echo ">mogrify< not found, resizing images will not be possible...\n";
-	}
-	//echo $value;
+    if (!check_exists_command('mogrify')) {
+        echo ">mogrify< not found, resizing images will not be possible...\n";
+        return false;
+    }
+	
 	
 	/* everything is fine */
 	return true;
@@ -66,7 +69,7 @@ function plugin_do_work($title, $input_path, $output_path) {
 	if (isset($options['android-version-code'])) $version_code = $options['android-version-code'];
 	$version_name = "1.0";
 	if (isset($options['android-version-name'])) $version_name = $options['android-version-name'];
-	$target_sdk = 19;
+	$target_sdk = "android-19";
 	if (isset($options['android-target-sdk'])) $target_sdk = $options['android-target-sdk'];
 	$min_sdk = $target_sdk;
 	if (isset($options['android-min-sdk'])) $min_sdk = $options['android-min-sdk'];
@@ -83,7 +86,8 @@ function plugin_do_work($title, $input_path, $output_path) {
 	//echo $return_value."\n";
 	
 	if ($return_value != 0) {
-		echo "Looks like an error occurred, sorry :(\n";
+		echo "Looks like an error occurred, sorry :( (Return value was ".$return_value.")\n";
+		return false;
 	}
 	
 	echo "Generating layout xml...\n";

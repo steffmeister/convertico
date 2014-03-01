@@ -44,8 +44,6 @@ function plugin_check_config() {
 
 function plugin_do_work($title, $input_path, $output_path) {
 
-	$shortopts = "";
-
 	$longopts = array(
 		"android-package-name:",
 		"android-target-sdk:",
@@ -59,7 +57,7 @@ function plugin_do_work($title, $input_path, $output_path) {
 		"android-ant-release"
 	);
 
-	$options = getopt($shortopts, $longopts);
+	$options = parseParameters($longopts);
 
 	//print_r($options);
 

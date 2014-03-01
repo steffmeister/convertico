@@ -21,7 +21,8 @@ $longopts = array(
 	"title:",
 	"plugin:",
 	"list-plugins",
-	"check"
+	"check",
+	"force"
 );
 
 $options = getopt($shortopts, $longopts);
@@ -99,7 +100,13 @@ if ((isset($options['plugin'])) && (isset($options['input']))) {
 		
 		if (is_dir($output_path)) {
 			echo "Output directory already exists!\n";
-			exit(6);
+			if (!isset($options['force'])) {
+				exit(6);
+			} else {
+				echo "force option given, deleting target directory...";
+				system("rm -rf ".$output_path);
+				echo "ok\n";
+			}
 		}
 		
 		if (!plugin_do_work($title, $input_path, $output_path)) {
@@ -215,6 +222,48 @@ function json_readable_encode($in, $indent = 0, $from_array = false) {
     $out .= "\n" . str_repeat("\t", $indent) . "}";
 
     return $out;
+}
+
+/**
+ * Parses $GLOBALS['argv'] for parameters and assigns them to an array.
+ *
+ * Supports:
+ * -e
+ * -e <value>
+ * --long-param
+ * --long-param=<value>
+ * --long-param <value>
+ * <value>
+ *
+ * @param array $noopt List of parameters without values
+ */
+function parseParameters($noopt = array()) {
+    $result = array();
+    $params = $GLOBALS['argv'];
+    // could use getopt() here (since PHP 5.3.0), but it doesn't work relyingly
+    reset($params);
+    while (list($tmp, $p) = each($params)) {
+        if ($p{0} == '-') {
+            $pname = substr($p, 1);
+            $value = true;
+            if ($pname{0} == '-') {
+                // long-opt (--<param>)
+                $pname = substr($pname, 1);
+                if (strpos($p, '=') !== false) {
+                    // value specified inline (--<param>=<value>)
+                    list($pname, $value) = explode('=', substr($p, 2), 2);
+                }
+            }
+            // check if next parameter is a descriptor or a value
+            $nextparm = current($params);
+            if (!in_array($pname, $noopt) && $value === true && $nextparm !== false && $nextparm{0} != '-') list($tmp, $value) = each($params);
+            $result[$pname] = $value;
+        } else {
+            // param doesn't belong to any option
+            $result[] = $p;
+        }
+    }
+    return $result;
 }
 
 ?>

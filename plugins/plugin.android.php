@@ -34,7 +34,6 @@ function plugin_check_config() {
 	/* check for "convert" of imagemagick */
     if (!check_exists_command('convert')) {
         echo ">convert< not found, resizing images will not be possible...\n";
-        return false;
     }
 	
 	

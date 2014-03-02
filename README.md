@@ -15,6 +15,8 @@ It is a PHP script so you need the PHP5 CLI on your system. Under Ubuntu this
 is in the "php5-cli" package. I think it has to be at least v5.3.
 Your HTML5 app needs to be inside of a folder and there needs to be an
 index.html file.
+Since the code contains some hardcoded system commands it is not compatible
+with Windows (at least). It should be working under all Linux like OS'es.
 
 Usage
 -----
@@ -44,6 +46,7 @@ found in the bin directory of the output folder.
  * Android SDK (adjust convertico.config.php accordingly)
  * Some settings in the Android SDK manager
  * ANT Compiler (in Ubuntu this is in package "ant")
+ * ImageMagick (optional, need the "convert" command for resizing icons)
 
 #### Parameters
 Those are optional.
@@ -60,11 +63,13 @@ Package app for Firefox OS (plugin.firefoxos.php)
 
 #### Requirements
  * zip
+ * php-gd extension (optional, for automatic icon resizing support)
 
 #### Parameters
 Those are optional
  * --description
  * --firefoxos-version-name, defaults to "1.0"
+ * --firefoxos-icon, application icon
 
 ### Your own target
 You can easily write your own target plugin. Following functions must be
@@ -89,7 +94,7 @@ Return values
  * 5 = Input path invalid
  * 6 = Output path already exists
  * 7 = Error occurred during conversion
- * 8 = index.html not found
+ * 8 = index.html not found in input directory
 
 
 Future plans
@@ -98,13 +103,19 @@ I am not sure if this is all possible, but it would be great to have a number
 of targets like Android, Windows Phone, iOS, Ubuntu, Firefox OS, Blackberry,
 Sailfish, and I am sure there is a number of mobile OS' which I have forgot.
 
+Why not use a lib like phonegap?
+--------------------------------
+I wanted to have a solution (a) without a library and (b) without the need to
+modify existing projects.
+
 License
 -------
 convertico is licensed under the terms of the GPLv2.
 
 Contact
 -------
-You can contact me via software(at)steffmeister(dot)at.
+You can contact me via software(at)steffmeister(dot)at. Visit it my homepage at
+www.steffmeister.at.
 
 Donations
 ---------

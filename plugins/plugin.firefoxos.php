@@ -74,7 +74,7 @@ function plugin_do_work($title, $input_path, $output_path) {
 				if ($width == $height) {
 					mkdir($output_path.'/converticoicons');
 					$manifest['icons'] = array();
-					$gen_sizes = array(256, 128, 120, 90, 60, 32);
+					$gen_sizes = array(32, 60, 90, 120, 128, 256);
 					foreach($gen_sizes as $new_width) {
 						echo "Icon: generating icon with width ".$new_width."...";
 						
@@ -90,7 +90,7 @@ function plugin_do_work($title, $input_path, $output_path) {
 						
 						if ($icon != false) {
 							if (imagepng($icon, $output_path.'/converticoicons/icon_'.$new_width.'.png')) {
-								$manifest['icons'][$new_width] = 'converticoicons/icon_'.$new_width.'.png';
+								$manifest['icons'][$new_width] = '/converticoicons/icon_'.$new_width.'.png';
 								echo "ok\n";
 							} else {
 								echo "saving failed\n";

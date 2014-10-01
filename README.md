@@ -122,6 +122,4 @@ Donations
 If you want to support the development or just want to say thanks, you can
 donate to me via the following ways:
  * PayPal, please contact me (see above).
- * Bitcoin Wallet, 13S3TknudXec4dWoABaWy4ZTegwPGMmQeP
- * Litecoin Wallet, LVPgjL8UNmjmMxW2fChkkQLJQzKd76w8ip
 
